@@ -24,8 +24,10 @@ This repo was constructed and intended for MacOs, and may not work with other *n
 ## Using
 
 1. Clone this repo
-2. Navigate into the project directory
-3. Follow the [demo steps](./notes.md)
+2. [Download the postgres jar for Java 8](https://jdbc.postgresql.org/download.html#current) into the jdbc directory
+3. Open a terminal and navigate into the project directory
+4. Set your JAR variable to the name of that file, i.e. `JAR=postgresql-42.2.8.jar`
+5. Follow the [demo steps](./demo-steps.md)
 
 ## Links
 
