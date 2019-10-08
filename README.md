@@ -19,6 +19,7 @@ This repo was constructed and intended for MacOs, and may not work with other *n
 
 1. Docker Desktop should be installed and running on your Mac
 2. [Titan should be downloaded and installed](http://titan-data.io/download)
+3. Valid awscli credentials installed and configured (required for reading public s3 buckets). [AWS credentials are configured through the standard means (environment variables or .aws config files)](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration).
 
 ## Using
 
