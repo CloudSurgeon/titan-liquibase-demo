@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#.sourceme
+[[ "`uname`" != "Darwin" ]] && echo "This script was only built/testing on MacOS. Exiting" && exit 1
+
+if [[ "$1" == "PERSIST" ]]; then
+    LOCALDATA="-v $(pwd)/data:/data"
+    echo "ssh container will mount and write titan commits to $(pwd)/data "
+else
+    unset LOCALDATA
+    echo "ssh container will be started without local data persistence"
+fi
+
+[[ $(docker images mongo | wc -l) -eq 1 ]] && docker pull mongo:latest
+[[ $(docker images liquibase/liquibase | wc -l) -eq 1 ]] && docker pull liquibase/liquibase
+[[ $(docker images insecure-ssh | wc -l) -eq 1 ]] && echo "Building ssh container" && docker build -t insecure-ssh:latest -f insecureSSH.Dockerfile .
+
+CONTAINERNAME="ugdemo"
+PROJECTDIR="/Users/abowen/Downloads/r2blog"
+JAR="postgresql-42.2.8.jar"
+IPADDRESS=$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'$CONTAINERNAME'")|.IPv4Address| split("/")|.[0]')
+alias liquibase="docker run -v ${PROJECTDIR}/jdbc:/liquibase/jdbc -v ${PROJECTDIR}/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/${JAR} --url="jdbc:postgresql://$IPADDRESS:5432/postgres" --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres"
+alias startSSHD="docker run -d -p 2222:22 ${LOCALDATA} --name sshd insecure-ssh:latest"
+alias mongo='docker exec -it mongo mongo'
+if [[ $(docker ps -a --filter name="sshd" | wc -l) -eq 1 ]]; then
+    echo "Starting sshd container"
+    startSSHD
+else
+    echo "Restarting sshd container"
+    docker rm -f sshd
+    startSSHD
+fi
+sleep 3
+SSHSERVER=$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="sshd")|.IPv4Address| split("/")|.[0]')
+echo "Ready for demo"

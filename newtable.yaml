@@ -1,0 +1,11 @@
+- changeSet:
+    id: 1570038190402-2
+    author: The Kraken
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: colname
+            type: VARCHAR(255)
+        tableName: newtable
+
