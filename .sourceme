@@ -7,6 +7,14 @@
 
 echo "Preparing environment variables for demo"
 
+if [[ ! -f `which jq` ]]; then
+    echo "your system doesn't have jq. fetching docker container"
+    docker pull stedolan/jq
+    alias jq="docker run -i stedolan/jq"
+else
+    echo "Found `which jq`"
+fi
+
 echo "Checking for jdbc/${JAR}"
 if [[ -f jdbc/${JAR} ]]; then
     echo "Found jdbc/${JAR}"
@@ -37,7 +45,6 @@ fi
 [[ $(docker images mongo | wc -l) -eq 1 ]] && docker pull mongo:latest
 [[ $(docker images liquibase/liquibase | wc -l) -eq 1 ]] && docker pull liquibase/liquibase
 [[ $(docker images insecure-ssh | wc -l) -eq 1 ]] && echo "Building ssh container" && docker build -t insecure-ssh:latest -f insecureSSH.Dockerfile .
-
 IPADDRESS=$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'$PG_CONTAINERNAME'")|.IPv4Address| split("/")|.[0]')
 alias liquibase="docker run -v $(pwd)/jdbc:/liquibase/jdbc -v $(pwd)/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/${JAR} --url="jdbc:postgresql://$IPADDRESS:5432/postgres" --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres"
 alias startSSHD="docker run -d -p 2222:22 ${LOCALDATA} --name titan-sshd insecure-ssh:latest"
