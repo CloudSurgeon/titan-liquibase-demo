@@ -42,6 +42,7 @@ IPADDRESS=$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name
 alias liquibase="docker run -v $(pwd)/jdbc:/liquibase/jdbc -v $(pwd)/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/${JAR} --url="jdbc:postgresql://$IPADDRESS:5432/postgres" --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres"
 alias startSSHD="docker run -d -p 2222:22 ${LOCALDATA} --name titan-sshd insecure-ssh:latest"
 alias mongo='docker exec -it titan-mongo mongo'
+alias psql="docker exec ${PG_CONTAINERNAME} psql"
 if [[ $(docker ps -a --filter name="titan-sshd" | wc -l) -eq 1 ]]; then
     echo "Starting titan-sshd container"
     startSSHD
