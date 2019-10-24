@@ -1,0 +1,3 @@
+  - include:
+      file: migrations/0007-patients-notes.yml
+      relativeToChangelogFile: true

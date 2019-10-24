@@ -4,7 +4,7 @@
 
 [![asciicast](https://asciinema.org/a/273133.svg)](https://asciinema.org/a/273133)
 
-## Steps
+## Steps With Liquibase
 
 1. `titan clone s3://titan-data-demo/hello-world/postgres titan-pg`
 2. `titan ls`
@@ -35,18 +35,21 @@
 27. `titan remote ls titan-pg`
 28. `titan push -r ssh titan-pg`
 29. `titan remote log titan-pg`
-30. `titan run -- --name titan-mongo -p 27017:27017 -d mongo:latest`
-31. `mongo --eval 'db.employees.insert({firstName: "Adam", lastName: "Bowen"})'`
-32. `titan commit -m "first employee" titan-mongo`
-33. `mongo --eval 'db.employees.insert({firstName: "Sanjeev", lastName: "Sharma"})'`
-34. `mongo --eval 'db.employees.find()'`
-35. `titan checkout -c $(titan log titan-mongo | sed '/commit/h; $!d; x'| awk '{print $2}') titan-mongo`
-36. `mongo --eval 'db.employees.find()'`
-37. `titan clone s3://titan-data-demo/hello-world/dynamodb titan-dynamo`
-38. `aws dynamodb scan --endpoint http://localhost:8000 --table-name messages | jq -r ".Items[0].message.S"`
-39. `titan ls`
-40. `titan rm -f titan-pg`
-41. `titan rm -f titan-mongo`
-42. `titan rm -f titan-dynamo`
-43. `titan ls`
-44. `docker rm -f titan-sshd`
+30. `titan rm -f titan-pg`
+
+## Steps Titan Only
+
+1. `titan run -- --name titan-mongo -p 27017:27017 -d mongo:latest`
+2. `mongo --eval 'db.employees.insert({firstName: "Adam", lastName: "Bowen"})'`
+3. `titan commit -m "first employee" titan-mongo`
+4. `mongo --eval 'db.employees.insert({firstName: "Sanjeev", lastName: "Sharma"})'`
+5. `mongo --eval 'db.employees.find()'`
+6. `titan checkout -c $(titan log titan-mongo | sed '/commit/h; $!d; x'| awk '{print $2}') titan-mongo`
+7. `mongo --eval 'db.employees.find()'`
+8. `titan clone s3://titan-data-demo/hello-world/dynamodb titan-dynamo`
+9. `aws dynamodb scan --endpoint http://localhost:8000 --table-name messages | jq -r ".Items[0].message.S"`
+10. `titan ls`
+11. `titan rm -f titan-mongo`
+12. `titan rm -f titan-dynamo`
+13. `titan ls`
+14. `docker rm -f titan-sshd`
