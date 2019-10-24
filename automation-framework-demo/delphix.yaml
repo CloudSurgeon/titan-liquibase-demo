@@ -1,0 +1,32 @@
+template: DAF
+api_key: 5iYCK2lApzMxUuVM3qFtq0OzBORwGpjfR9K
+parent: dms-source
+config:
+  notes: DAF Datasources
+  data-sources:
+    - postgres:
+        notes: Postgres Replica
+        replica: Default
+        source: postgres
+        start-order: 1
+        ami: ami-0dfffed98347ecd
+connectors:
+  - postgres:
+      file: /src/main/resources/application.properties
+      jdbc: spring.datasource.url
+      host: spring.database.url
+      database: spring.database.database
+      port: spring.database.port
+      username: spring.datasource.username
+      password: spring.datasource.password
+environments:
+  - test:
+      branch: origin/master
+      datapod: Test
+      when:
+        - push: datapod.refresh
+  - develop:
+      branch: origin/develop
+      datapod: Develop
+      when:
+        - push: datapod.refresh

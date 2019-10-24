@@ -1,0 +1,20 @@
+driver-class-name=oracle.jdbc.OracleDriver
+password={{ db_password }}
+username={{ db_username }}
+url=jdbc:oracle:thin:@//{{ db_hostname }}:{{ db_port }}/{{ db_name }}
+
+
+## Spring DATASOURCE (DataSourceAutoConfiguration & DataSourceProperties)
+spring.datasource.url=jdbc:oracle:thin:@//{{ db_hostname }}:{{ db_port }}/{{ db_name }}
+spring.datasource.username={{ db_username }}
+spring.datasource.password={{ db_password }}
+
+# The SQL dialect makes Hibernate generate better SQL for the chosen database
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.Oracle10gDialect
+
+spring.liquibase.enabled=false
+
+jwt.header=Authorization
+jwt.prefix=Bearer
+jwt.secret={{ jwt_secret }}
+jwt.expiration=604800

@@ -1,0 +1,11 @@
+.m-15 {
+    margin:15px;
+}
+
+.mat-toolbar {
+  width: inherit;
+}
+
+mat-form-field {
+  width: 100%;
+}
