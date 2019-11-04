@@ -6,7 +6,7 @@ url=jdbc:postgresql://{{ db_hostname }}:{{ db_port }}/{{ db_name }}
 
 
 ## Spring DATASOURCE (DataSourceAutoConfiguration & DataSourceProperties)
-spring.datasource.url=jdbc:postgresql://@//{{ db_hostname }}:{{ db_port }}/{{ db_name }}
+spring.datasource.url=jdbc:postgresql://{{ db_hostname }}:{{ db_port }}/{{ db_name }}
 spring.datasource.username={{ db_username }}
 spring.datasource.password={{ db_password }}
 
