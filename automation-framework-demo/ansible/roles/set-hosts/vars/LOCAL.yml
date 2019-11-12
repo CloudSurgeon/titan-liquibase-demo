@@ -5,4 +5,4 @@ db_name: dafdb
 db_username: delphixdb
 db_password: delphixdb
 jwt_secret: LDdhUPyvOFkZcsdBqIWaIHlrldM7McPTBVyLfdInftQ
-web_port: 8181
+web_port: 8080
