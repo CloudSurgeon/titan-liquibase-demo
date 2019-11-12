@@ -2,6 +2,8 @@ pipeline {
     agent any
     environment {
       APPNAME = 'PATIENTS'
+      APPDIR = 'automation-framework-demo'
+      ANSIBLE_DIR = "$APPDIR/ansible"
     }
     stages {
         stage('Prepare Environment'){
@@ -14,7 +16,7 @@ pipeline {
 
         stage('Compile Application') {
             steps {
-                dir ('ansible') {
+                dir ($ANSIBLE_DIR) {
                     sh "echo Compile"
                     sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x sdlc_env=LOCAL --tags \"build\" --limit localhost"
                 }
@@ -29,7 +31,7 @@ pipeline {
 
         stage('Deploy Application Stack') {
             steps {
-                dir ('ansible') {
+                dir (ANSIBLE_DIR) {
                 // sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x sdlc_env=DEV --tags \"deploy\" --limit devweb"
                 sh "echo Deploy"
                 }
