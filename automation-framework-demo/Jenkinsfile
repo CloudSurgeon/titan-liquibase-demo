@@ -15,8 +15,8 @@ pipeline {
         stage('Compile Application') {
             steps {
                 dir ('ansible') {
-                    // sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x sdlc_env=DEV --tags \"build\" --limit devweb"
                     sh "echo Compile"
+                    sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x sdlc_env=LOCAL --tags \"build\" --limit localhost"
                 }
             }
         }
