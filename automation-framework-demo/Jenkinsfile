@@ -4,6 +4,11 @@ pipeline {
       APPNAME = 'PATIENTS'
       APPDIR = 'automation-framework-demo'
       ANSIBLE_DIR = "$APPDIR/ansible"
+      TITAN = '/usr/local/bin/titan'
+      JAR = 'postgresql.jar'
+      PG_CONTAINERNAME = 'patients-db'
+      JQ = 'docker run -i stedolan/jq'
+      LIQUIBASE = 'docker run -v /var/lib/jenkins/workspace/Patients_Pipeline_app/jdbc:/liquibase/jdbc -v /var/lib/jenkins/workspace/Patients_Pipeline_app/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/postgresql.jar --url=jdbc:postgresql://localhost:5432/postgres --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres'
     }
     stages {
         stage('Prepare Environment'){
@@ -23,9 +28,12 @@ pipeline {
             }
         }
 
-        stage('Package and Test SQL Changes') {
+        stage('Database') {
 			steps {
-                echo "Package and Test SQL Changes"
+                echo "Titan-y things"
+                sh """
+                    ${TITAN} run -- --name patients-db -p 5432:5432 -d postgres:latest
+                """"
 			} 
         }
 
