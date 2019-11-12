@@ -33,7 +33,7 @@ pipeline {
                 echo "Titan-y things"
                 sh """
                     ${TITAN} run -- --name patients-db -p 5432:5432 -d postgres:latest
-                """"
+                """
 			} 
         }
 
