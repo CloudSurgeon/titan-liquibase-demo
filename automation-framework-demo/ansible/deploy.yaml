@@ -14,7 +14,7 @@
   post_tasks:
     - name: Create Test User to Ensure App-Api is running.
       uri:
-        url: "http://localhost:8080/auth/sign-up"
+        url: "http://localhost:8181/auth/sign-up"
         method: POST
         body: '{
           "username": "test_user",
@@ -33,7 +33,7 @@
 
     - name: Login as test user.
       uri:
-        url: "http://localhost:8080/auth/login"
+        url: "http://localhost:8181/auth/login"
         method: POST
         body_format: json
         status_code: 200
@@ -48,7 +48,7 @@
 
     - name: Delete test user.
       uri:
-        url: "http://localhost:8080/users/{{ testuser.json.id }}"
+        url: "http://localhost:8181/users/{{ testuser.json.id }}"
         method: DELETE
         body_format: json
         status_code: 200
