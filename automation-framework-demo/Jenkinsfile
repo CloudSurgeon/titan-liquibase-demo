@@ -8,7 +8,7 @@ pipeline {
       JAR = 'postgresql.jar'
       PG_CONTAINERNAME = 'patients-db'
       JQ = 'docker run -i stedolan/jq'
-      LIQUIBASE = 'docker run -v /var/lib/jenkins/workspace/Patients_Pipeline_app/jdbc:/liquibase/jdbc -v /var/lib/jenkins/workspace/Patients_Pipeline_app/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/postgresql.jar --url=jdbc:postgresql://localhost:5432/postgres --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres'
+      LIQUIBASE = 'docker run -v /var/lib/jenkins/jdbc:/liquibase/jdbc -v /var/lib/jenkins/workspace/Patients_Pipeline_app/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/postgresql.jar --url=jdbc:postgresql://10.0.1.6:5432/postgres --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres'
     }
     stages {
         stage('Prepare Environment'){
@@ -33,6 +33,8 @@ pipeline {
                 echo "Titan-y things"
                 sh """
                     ${TITAN} run -- --name patients-db -p 5432:5432 -d postgres:latest
+                    ${LIQUIBASE} generateChangeLog
+                    ${TITAN} rm -f patients-db
                 """
 			} 
         }
