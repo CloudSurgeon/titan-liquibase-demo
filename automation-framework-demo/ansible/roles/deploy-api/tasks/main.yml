@@ -1,4 +1,15 @@
 ---
+- name: create service for app-api
+  template: 
+    src: app-api.service.j2
+    dest: /etc/systemd/system/app-api.service
+
+- name: enable app-api
+  systemd:
+    enabled: yes
+    name: app-api
+    daemon_reload: yes
+
 - name: STOP API SERVICE
   become: true
   systemd:
