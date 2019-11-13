@@ -6,7 +6,7 @@
 
 ## Steps With Liquibase
 
-1. `titan clone s3://titan-data-demo/hello-world/postgres titan-pg`
+1. `titan run -- --name patients-db -p 5432:5432 -d postgres:latest`
 2. `titan ls`
 3. `source .sourceme` (if you want to persist/inspect the pushes to the ssh server, execute `source .sourceme PERSIST`)
 4. `type liquibase`

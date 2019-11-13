@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #.sourceme
 : "${PG_CONTAINERNAME:=titan-pg}"
-: "${JAR=postgresql-42.2.8.jar}"
+: "${JAR=postgresql.jar}"
 
 [[ "`uname`" != "Darwin" ]] && echo "This script was only built/testing on MacOS. Exiting" && exit 1
 

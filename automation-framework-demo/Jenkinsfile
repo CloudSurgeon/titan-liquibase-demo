@@ -8,7 +8,7 @@ pipeline {
       JAR = 'postgresql.jar'
       PG_CONTAINERNAME = 'patients-db'
       JQ = 'docker run -i stedolan/jq'
-      LIQUIBASE = 'docker run -v $/var/lib/jenkins/jdbc:/liquibase/jdbc -v $(pwd)/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/${JAR} --url="jdbc:postgresql://$IPADDRESS:5432/dafdb" --changeLogFile=/liquibase/changelog/changelog.yaml --username=delphixdb --password=delphixdb'
+      LIQUIBASE = 'docker run -v /var/lib/jenkins/jdbc:/liquibase/jdbc -v $(pwd)/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/${JAR} --url="jdbc:postgresql://$IPADDRESS:5432/dafdb" --changeLogFile=/liquibase/changelog/changelog.yaml --username=delphixdb --password=delphixdb'
     }
     stages {
         stage('Prepare Environment'){
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 dir (env.ANSIBLE_DIR) {
                     sh "echo Compile"
-                    sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"build\" --limit localhost"
+                    // sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"build\" --limit localhost"
                 }
             }
         }
@@ -32,9 +32,10 @@ pipeline {
         stage('Database') {
 			steps {
                 sh """
-                    #${TITAN} run -- --name patients-db -p 5432:5432 -d postgres:latest
-                    #sleep 5
                     echo "Titan-y things"
+                    ${TITAN} checkout -t prod
+                    sleep 5
+                    IPADDRESS=\$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'${PG_CONTAINERNAME}'")|.IPv4Address| split("/")|.[0]')
                     ${LIQUIBASE} generateChangeLog
                     #${TITAN} rm -f patients-db
                 """
@@ -45,7 +46,7 @@ pipeline {
             steps {
                 dir (env.ANSIBLE_DIR) {
                     sh "echo Deploy"
-                    sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"deploy\" --limit localhost"
+                    // sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"deploy\" --limit localhost"
                 }
             }
         }
