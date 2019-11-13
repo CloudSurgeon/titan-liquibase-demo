@@ -12,10 +12,13 @@ pipeline {
     stages {
         stage('Prepare Environment'){
             steps {
-                sh "env"
+                // sh "env"
                 sh "git clean -ffdx"
-                sh "echo $PATH"
-                sh "chmod a+w changelog"
+                // sh "echo $PATH"
+                sh """
+                    { set +x; } 2>/dev/null
+                    chmod a+w changelog
+                """
             }
         }
 
@@ -23,7 +26,7 @@ pipeline {
             steps {
                 dir (env.ANSIBLE_DIR) {
                     sh  """
-                        set +x
+                        { set +x; } 2>/dev/null
                         ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"build\" --limit localhost
                     """
                 }
@@ -33,7 +36,8 @@ pipeline {
         stage('Apply Database Changes') {
 			steps {
                 sh """
-                    set +x
+                    { set +x; } 2>/dev/null
+                    ${TITAN} pull -r origin -t prod ${PG_CONTAINERNAME}
                     ${TITAN} checkout -t prod ${PG_CONTAINERNAME}
                     sleep 5
                     IPADDRESS=\$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'${PG_CONTAINERNAME}'")|.IPv4Address| split("/")|.[0]')
@@ -48,6 +52,7 @@ pipeline {
             steps {
                 dir (env.ANSIBLE_DIR) {
                     sh  """
+                        { set +x; } 2>/dev/null
                         ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"deploy\" --limit localhost
                     """
                 }
@@ -57,7 +62,7 @@ pipeline {
         stage('Upon Success, Publish new Dataset') {
 			steps {
                 sh """
-                    set +x
+                    { set +x; } 2>/dev/null
                     ${TITAN} commit -t prod -t commit=${GIT_COMMIT} ${PG_CONTAINERNAME}
                     ${TITAN} push -r origin ${PG_CONTAINERNAME}
                 """
