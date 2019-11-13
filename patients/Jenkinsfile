@@ -37,7 +37,9 @@ pipeline {
                     ${TITAN} checkout -t prod ${PG_CONTAINERNAME}
                     sleep 5
                     IPADDRESS=\$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'${PG_CONTAINERNAME}'")|.IPv4Address| split("/")|.[0]')
-                    ${LIQUIBASE} generateChangeLog
+                    ${LIQUIBASE} validate
+                    ${LIQUIBASE} updateSQL
+                    ${LIQUIBASE} update
                 """
 			} 
         }
