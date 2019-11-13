@@ -15,10 +15,6 @@ pipeline {
                 // sh "env"
                 sh "git clean -ffdx"
                 // sh "echo $PATH"
-                sh """
-                    { set +x; } 2>/dev/null
-                    chmod a+w changelog
-                """
             }
         }
 
@@ -37,7 +33,7 @@ pipeline {
 			steps {
                 sh """
                     { set +x; } 2>/dev/null
-                    ${TITAN} pull -r origin -t prod ${PG_CONTAINERNAME}
+                    ${TITAN} pull -r origin -t prod ${PG_CONTAINERNAME} || echo "already exists"
                     ${TITAN} checkout -t prod ${PG_CONTAINERNAME}
                     sleep 5
                     IPADDRESS=\$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'${PG_CONTAINERNAME}'")|.IPv4Address| split("/")|.[0]')
