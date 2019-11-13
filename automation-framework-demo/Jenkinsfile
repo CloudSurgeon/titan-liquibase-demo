@@ -16,7 +16,7 @@ pipeline {
                 sh "env"
                 sh "git clean -ffdx"
                 sh "echo $PATH"
-                sh "chmod +x changelog"
+                sh "chmod a+w changelog"
             }
         }
 
@@ -34,11 +34,10 @@ pipeline {
                 sh """
                     echo "Titan-y things"
                     echo ${PG_CONTAINERNAME}
-                    ${TITAN} checkout -t prod patients-db
+                    ${TITAN} checkout -t prod ${PG_CONTAINERNAME}
                     sleep 5
                     IPADDRESS=\$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'${PG_CONTAINERNAME}'")|.IPv4Address| split("/")|.[0]')
                     ${LIQUIBASE} generateChangeLog
-                    #${TITAN} rm -f patients-db
                 """
 			} 
         }
