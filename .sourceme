@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #.sourceme
-: "${PG_CONTAINERNAME:=titan-pg}"
+: "${PG_CONTAINERNAME:=patients-db}"
 : "${JAR=postgresql.jar}"
 
 [[ "`uname`" != "Darwin" ]] && echo "This script was only built/testing on MacOS. Exiting" && exit 1
@@ -24,40 +24,40 @@ else
     exit 1
 fi
 
-echo "Checking for changelog/changelog.yaml from previous demo"
-if [[ -f changelog/changelog.yaml ]]; then
-    echo "Found changelog/changelog.yaml. Removing in 3s if not canceled"
-    sleep 3
-    rm changelog/changelog.yaml
-else
-    echo "changelog/changelog.yaml not found. Proceeding."
-fi
+# echo "Checking for changelog/changelog.yaml from previous demo"
+# if [[ -f changelog/changelog.yaml ]]; then
+#     echo "Found changelog/changelog.yaml. Removing in 3s if not canceled"
+#     sleep 3
+#     rm changelog/changelog.yaml
+# else
+#     echo "changelog/changelog.yaml not found. Proceeding."
+# fi
 
 
-if [[ "$1" == "PERSIST" ]]; then
-    LOCALDATA="-v $(pwd)/data:/data"
-    echo "ssh container will mount and write titan commits to $(pwd)/data "
-else
-    unset LOCALDATA
-    echo "ssh container will be started without local data persistence"
-fi
+# if [[ "$1" == "PERSIST" ]]; then
+#     LOCALDATA="-v $(pwd)/data:/data"
+#     echo "ssh container will mount and write titan commits to $(pwd)/data "
+# else
+#     unset LOCALDATA
+#     echo "ssh container will be started without local data persistence"
+# fi
 
-[[ $(docker images mongo | wc -l) -eq 1 ]] && docker pull mongo:latest
+# [[ $(docker images mongo | wc -l) -eq 1 ]] && docker pull mongo:latest
 [[ $(docker images liquibase/liquibase | wc -l) -eq 1 ]] && docker pull liquibase/liquibase
-[[ $(docker images insecure-ssh | wc -l) -eq 1 ]] && echo "Building ssh container" && docker build -t insecure-ssh:latest -f insecureSSH.Dockerfile .
+# [[ $(docker images insecure-ssh | wc -l) -eq 1 ]] && echo "Building ssh container" && docker build -t insecure-ssh:latest -f insecureSSH.Dockerfile .
 IPADDRESS=$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'$PG_CONTAINERNAME'")|.IPv4Address| split("/")|.[0]')
-alias liquibase="docker run -v $(pwd)/jdbc:/liquibase/jdbc -v $(pwd)/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/${JAR} --url="jdbc:postgresql://$IPADDRESS:5432/postgres" --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres"
-alias startSSHD="docker run -d -p 2222:22 ${LOCALDATA} --name titan-sshd insecure-ssh:latest"
-alias mongo='docker exec -it titan-mongo mongo'
-alias psql="docker exec ${PG_CONTAINERNAME} psql"
-if [[ $(docker ps -a --filter name="titan-sshd" | wc -l) -eq 1 ]]; then
-    echo "Starting titan-sshd container"
-    startSSHD
-else
-    echo "Restarting titan-sshd container"
-    docker rm -f titan-sshd
-    startSSHD
-fi
-sleep 3
-SSHSERVER=$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="titan-sshd")|.IPv4Address| split("/")|.[0]')
+alias liquibase="docker run -v $(pwd)/jdbc:/liquibase/jdbc -v $(pwd)patients/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/${JAR} --url="jdbc:postgresql://$IPADDRESS:5432/postgres" --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres"
+#alias startSSHD="docker run -d -p 2222:22 ${LOCALDATA} --name titan-sshd insecure-ssh:latest"
+#alias mongo='docker exec -it titan-mongo mongo'
+alias psql="docker exec ${PG_CONTAINERNAME} psql postgres://postgres:postgres@localhost/dafdb -t -c"
+# if [[ $(docker ps -a --filter name="titan-sshd" | wc -l) -eq 1 ]]; then
+#     echo "Starting titan-sshd container"
+#     startSSHD
+# else
+#     echo "Restarting titan-sshd container"
+#     docker rm -f titan-sshd
+#     startSSHD
+# fi
+# sleep 3
+# SSHSERVER=$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="titan-sshd")|.IPv4Address| split("/")|.[0]')
 echo "Ready for demo"
