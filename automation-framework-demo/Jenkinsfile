@@ -33,7 +33,8 @@ pipeline {
 			steps {
                 sh """
                     echo "Titan-y things"
-                    ${TITAN} checkout -t prod
+                    echo ${PG_CONTAINERNAME}
+                    ${TITAN} checkout -t prod patients-db
                     sleep 5
                     IPADDRESS=\$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'${PG_CONTAINERNAME}'")|.IPv4Address| split("/")|.[0]')
                     ${LIQUIBASE} generateChangeLog
