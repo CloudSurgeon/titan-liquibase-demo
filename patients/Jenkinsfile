@@ -1,8 +1,7 @@
 pipeline {
     agent any
     environment {
-      APPNAME = 'PATIENTS'
-      APPDIR = 'automation-framework-demo'
+      APPDIR = 'patients'
       ANSIBLE_DIR = "$APPDIR/ansible"
       TITAN = '/usr/local/bin/titan'
       JAR = 'postgresql.jar'
