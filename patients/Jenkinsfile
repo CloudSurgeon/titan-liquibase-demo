@@ -24,7 +24,7 @@ pipeline {
             steps {
                 dir (env.ANSIBLE_DIR) {
                     sh "echo Compile"
-                    // sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"build\" --limit localhost"
+                    sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"build\" --limit localhost"
                 }
             }
         }
@@ -48,7 +48,7 @@ pipeline {
             steps {
                 dir (env.ANSIBLE_DIR) {
                     sh "echo Deploy"
-                    // sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"deploy\" --limit localhost"
+                    sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"deploy\" --limit localhost"
                 }
             }
         }
