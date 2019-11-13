@@ -31,10 +31,10 @@ pipeline {
 
         stage('Database') {
 			steps {
-                echo "Titan-y things"
                 sh """
                     #${TITAN} run -- --name patients-db -p 5432:5432 -d postgres:latest
                     #sleep 5
+                    echo "Titan-y things"
                     ${LIQUIBASE} generateChangeLog
                     #${TITAN} rm -f patients-db
                 """
