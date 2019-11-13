@@ -22,17 +22,18 @@ pipeline {
         stage('Compile Application') {
             steps {
                 dir (env.ANSIBLE_DIR) {
-                    sh "echo Compile"
-                    sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"build\" --limit localhost"
+                    sh  """
+                        set +x
+                        ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"build\" --limit localhost
+                    """
                 }
             }
         }
 
-        stage('Database') {
+        stage('Apply Database Changes') {
 			steps {
                 sh """
-                    echo "Titan-y things"
-                    echo ${PG_CONTAINERNAME}
+                    set +x
                     ${TITAN} checkout -t prod ${PG_CONTAINERNAME}
                     sleep 5
                     IPADDRESS=\$(docker network inspect bridge | jq -r '.[].Containers[]|select(.Name=="'${PG_CONTAINERNAME}'")|.IPv4Address| split("/")|.[0]')
@@ -46,11 +47,21 @@ pipeline {
         stage('Deploy Application Stack') {
             steps {
                 dir (env.ANSIBLE_DIR) {
-                    sh "echo Deploy"
-                    sh  "ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"deploy\" --limit localhost"
+                    sh  """
+                        ansible-playbook deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=LOCAL --tags \"deploy\" --limit localhost
+                    """
                 }
             }
         }
+
+        stage('Upon Success, Publish new Dataset') {
+			steps {
+                sh """
+                    set +x
+                    ${TITAN} commit -t prod -t commit=${GIT_COMMIT} ${PG_CONTAINERNAME}
+                    ${TITAN} push -r origin ${PG_CONTAINERNAME}
+                """
+			} 
+        }
     }
 }
- 
