@@ -8,7 +8,7 @@ pipeline {
       JAR = 'postgresql.jar'
       PG_CONTAINERNAME = 'patients-db'
       JQ = 'docker run -i stedolan/jq'
-      LIQUIBASE = 'docker run -v /var/lib/jenkins/jdbc:/liquibase/jdbc -v /var/lib/jenkins/workspace/Patients_Pipeline_app/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/postgresql.jar --url=jdbc:postgresql://10.0.1.6:5432/postgres --changeLogFile=/liquibase/changelog/changelog.yaml --username=postgres --password=postgres'
+      LIQUIBASE = "docker run -v ${JENKINS_HOME}/jdbc:/liquibase/jdbc -v $(pwd)/changelog:/liquibase/changelog liquibase/liquibase --driver=org.postgresql.Driver --classpath=/liquibase/jdbc/${JAR} --url=\"jdbc:postgresql://$IPADDRESS:5432/dafdb\" --changeLogFile=/liquibase/changelog/changelog.yaml --username=delphixdb --password=delphixdb"
     }
     stages {
         stage('Prepare Environment'){
@@ -16,6 +16,7 @@ pipeline {
                 sh "env"
                 sh "git clean -ffdx"
                 sh "echo $PATH"
+                sh "chmod +x changelog"
             }
         }
 
@@ -34,7 +35,7 @@ pipeline {
                 sh """
                     #${TITAN} run -- --name patients-db -p 5432:5432 -d postgres:latest
                     #sleep 5
-                    #${LIQUIBASE} generateChangeLog
+                    ${LIQUIBASE} generateChangeLog
                     #${TITAN} rm -f patients-db
                 """
 			} 

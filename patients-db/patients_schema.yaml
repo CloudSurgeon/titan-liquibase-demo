@@ -1,0 +1,292 @@
+databaseChangeLog:
+- changeSet:
+    id: 1573605897681-1
+    author: liquibase (generated)
+    changes:
+    - createSequence:
+        sequenceName: hibernate_sequence
+- changeSet:
+    id: 1573605897681-2
+    author: liquibase (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              primaryKeyName: billings_pkey
+            name: id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: patient_id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: ccnum
+            type: VARCHAR(32)
+        - column:
+            constraints:
+              nullable: false
+            name: cctype
+            type: VARCHAR(55)
+        - column:
+            constraints:
+              nullable: false
+            name: ccexpmonth
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: ccexpyear
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: address1
+            type: VARCHAR(255)
+        - column:
+            name: address2
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: city
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: state
+            type: VARCHAR(4)
+        - column:
+            constraints:
+              nullable: false
+            name: zip
+            type: VARCHAR(12)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        tableName: billings
+- changeSet:
+    id: 1573605897681-3
+    author: liquibase (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              primaryKeyName: patients_pkey
+            name: id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: firstname
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: middlename
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: lastname
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: ssn
+            type: VARCHAR(12)
+        - column:
+            constraints:
+              nullable: false
+            name: dob
+            type: VARCHAR(10)
+        - column:
+            constraints:
+              nullable: false
+            name: address1
+            type: VARCHAR(255)
+        - column:
+            name: address2
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: city
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: state
+            type: VARCHAR(4)
+        - column:
+            constraints:
+              nullable: false
+            name: zip
+            type: VARCHAR(12)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        tableName: patients
+- changeSet:
+    id: 1573605897681-4
+    author: liquibase (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              primaryKeyName: payments_pkey
+            name: id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: patient_id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: amount
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: authcode
+            type: VARCHAR(36)
+        - column:
+            constraints:
+              nullable: false
+            name: currency
+            type: VARCHAR(4)
+        - column:
+            constraints:
+              nullable: false
+            defaultValueBoolean: false
+            name: captured
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: type
+            type: VARCHAR(55)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        tableName: payments
+- changeSet:
+    id: 1573605897681-5
+    author: liquibase (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              primaryKeyName: records_pkey
+            name: id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: patient_id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: type
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        tableName: records
+- changeSet:
+    id: 1573605897681-6
+    author: liquibase (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              primaryKeyName: users_pkey
+            name: id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: username
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: firstname
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: lastname
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: password
+            type: VARCHAR(255)
+        tableName: users
+- changeSet:
+    id: 1573605897681-7
+    author: liquibase (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: username
+        constraintName: username
+        tableName: users
